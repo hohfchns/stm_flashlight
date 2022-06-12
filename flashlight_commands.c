@@ -1,6 +1,7 @@
 #include "flashlight_commands.h"
 #include "flashlight_sm.h"
 #include "flashlight.h"
+#include <stdio.h>
 #include <string.h>
 
 #define FL_CMD_MAX_SIZE 128
