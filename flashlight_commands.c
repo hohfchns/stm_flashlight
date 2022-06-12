@@ -39,7 +39,7 @@ void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
     printf("Setting LED state to OFF\r\n");
     FL_SetState(flashLight, FL_STATE_OFF);
   }
-  else if (COMM("brightness"))
+  else if (COMM("brightness") || COMM("br"))
   {
 	  if (paramc < 2)
 	  {
