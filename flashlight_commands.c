@@ -1,14 +1,14 @@
 #include "flashlight_commands.h"
-#include "stm_term.h"
 #include "flashlight_sm.h"
 #include "flashlight.h"
 #include <string.h>
 
+#define FL_CMD_MAX_SIZE 128
 
 void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
 {
   #define COMM(command) strcmp(cmd, command) == 0
-  char cmd[TERM_CMD_BUF_SIZE];
+  char cmd[FL_CMD_MAX_SIZE];
   int maxCount;
 
   int paramc = sscanf(cmdbuffer, "%s %d", cmd, &maxCount);
