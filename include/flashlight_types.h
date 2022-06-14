@@ -15,11 +15,15 @@ typedef enum FlashLightState {
 typedef struct FlashLight {
   FlashLightState state;
   int blinkDuration;
+  uint32_t blinkTime;
   int brightness;
   int brightnessCounter;
+  uint32_t brightnessTime;
   Button triggerButton;
   Light targetLight;
   TIM_HandleTypeDef* tim;
+
+  uint32_t lastTime;
 } FlashLight;
 
 #endif /* INC_FLASHLIGHT_TYPES_H_ */
