@@ -17,11 +17,16 @@ typedef struct FlashLight {
   int blinkDuration;
   uint32_t blinkTime;
   int brightness;
+  int brightnessMax;
   int brightnessCounter;
   uint32_t brightnessTime;
   Button triggerButton;
   Light targetLight;
   TIM_HandleTypeDef* tim;
+  int brightTimMultiplier;
+
+
+  int timMultiplier;
 
   uint32_t lastTime;
 } FlashLight;

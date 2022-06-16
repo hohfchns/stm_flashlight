@@ -12,13 +12,15 @@ void FL_Init(FlashLight *target, int blinkDuration_, int brightness_, Button but
 	target->brightness = brightness_;
 	target->state = FL_STATE_OFF;
 	target->brightnessCounter = 0;
+	target->brightnessMax = MAX_BRIGHTNESS_COUNT;
 	target->brightnessTime = 0;
 	target->triggerButton = button_;
 	target->targetLight = light_;
 	target->tim = tim_;
 	target->lastTime = 0;
+	target->brightTimMultiplier = 1;
 
-	__HAL_TIM_SET_AUTORELOAD(tim_, FL_TIM_TOLERANCE);
+	__HAL_TIM_SET_AUTORELOAD(target->tim, FL_TIM_TOLERANCE);
 }
 
 void FL_Update(FlashLight *target) {
@@ -26,7 +28,7 @@ void FL_Update(FlashLight *target) {
 	{
 		__FL_Timeout_Blink(target);
 	}
-	else if (target->brightnessTime >= BRIGHTNESS_TOLERANCE)
+	else if (target->brightnessTime >= FL_TIM_TOLERANCE)
 	{
 		__FL_Timeout_Brightness(target);
 	}
@@ -89,12 +91,6 @@ void FL_TIMCB(FlashLight* target, TIM_HandleTypeDef* triggerTim)
   target->blinkTime += FL_TIM_TOLERANCE;
   target->brightnessTime += FL_TIM_TOLERANCE;
   return;
-
-  if (target->state == FL_STATE_BLINK || target->state == FL_STATE_LOW)
-  {
-    HAL_GPIO_TogglePin(target->targetLight.GPIOx, target->targetLight.pin);
-    target->brightnessCounter = (target->brightnessCounter + 1) % MAX_BRIGHTNESS_COUNT;
-  }
 }
 
 void FL_BTNCB(FlashLight* target, uint16_t GPIO_Pin)
@@ -104,6 +100,13 @@ void FL_BTNCB(FlashLight* target, uint16_t GPIO_Pin)
       FLSM_SwitchState(&(target->state));
       __HAL_TIM_SET_COUNTER(target->tim, 0);
   }
+}
+
+
+void FL_Settings(FlashLight* target, int brightnessMax_, int timMultiplier_)
+{
+	target->brightnessMax = brightnessMax_;
+	target->brightTimMultiplier = timMultiplier_;
 }
 
 
@@ -121,7 +124,7 @@ void __FL_Timeout_Brightness(FlashLight* target)
 	target->brightnessTime = 0;
 	if (target->state == FL_STATE_LOW)
 	{
-		target->brightnessCounter = (target->brightnessCounter + 1) % MAX_BRIGHTNESS_COUNT;
+		target->brightnessCounter = (target->brightnessCounter + target->brightTimMultiplier) % target->brightnessMax;
 	}
 }
 
