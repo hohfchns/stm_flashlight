@@ -6,7 +6,7 @@
 
 #define FL_CMD_MAX_SIZE 128
 
-void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
+int FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
 {
   #define COMM(command) strcmp(cmd, command) == 0
   char cmd[FL_CMD_MAX_SIZE];
@@ -16,7 +16,7 @@ void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
 
   if (paramc == 0)
   {
-    return;
+    return 0;
   }
 
   if (COMM("full"))
@@ -44,12 +44,12 @@ void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
 	  if (paramc < 2)
 	  {
 		  printf("Please provide an argument for brightness!\r\n");
-		  return;
+		  return 1;
 	  }
 	  else if (maxCount < 0 || maxCount > MAX_BRIGHTNESS_COUNT)
 	  {
 		  printf("Brightness should be a number between 0 and %d!\r\n", MAX_BRIGHTNESS_COUNT);
-		  return;
+		  return 1;
 	  }
 
 	  printf("Setting brightness to value %d\r\n\r", maxCount);
@@ -57,7 +57,10 @@ void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight)
   }
   else
   {
-    printf("Invalid command '%s'\r\n\r", cmd);
+	  // Didn't get a valid command
+	  return 0;
   }
 
+  // Got a valid command
+  return 1;
 }

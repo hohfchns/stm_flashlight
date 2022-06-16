@@ -3,6 +3,6 @@
 
 #include "flashlight_types.h"
 
-void FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight);
+int FL_COMMANDS(const char* cmdbuffer, FlashLight* flashLight);
 
 #endif /* INC_FLASHLIGHT_COMMANDS_H_ */

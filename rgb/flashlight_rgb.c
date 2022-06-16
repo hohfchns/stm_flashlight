@@ -9,12 +9,18 @@ void FL_RGB_Init(FL_RGB* rgb, Light rl_, Light gl_, Light bl_, TIM_HandleTypeDef
 	FL_Init(&rgb->flB, 500, rgb->color.g, tmp, gl_, tim_);
 	FL_Init(&rgb->flG, 500, rgb->color.b, tmp, bl_, tim_);
 
-	FL_Settings(&rgb->flR, 255, 15);
 	rgb->flR.targetLight = rl_;
 	// Blue and green have flipped order in pins
 	rgb->flB.targetLight = gl_;
 	rgb->flG.targetLight = bl_;
 
+	rgb->flR.timChannel = TIM_CHANNEL_1;
+	rgb->flG.timChannel = TIM_CHANNEL_2;
+	rgb->flB.timChannel = TIM_CHANNEL_3;
+
+	FL_Settings(&rgb->flR, 255, 5);
+	FL_Settings(&rgb->flG, 255, 5);
+	FL_Settings(&rgb->flB, 255, 5);
 }
 
 void FL_RGB_TIMCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
@@ -22,6 +28,13 @@ void FL_RGB_TIMCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
 	FL_TIMCB(&rgb->flR, htim);
 	FL_TIMCB(&rgb->flG, htim);
 	FL_TIMCB(&rgb->flB, htim);
+}
+
+void FL_RGB_PulseCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
+{
+	FL_PulseCB(&rgb->flR, htim);
+	FL_PulseCB(&rgb->flG, htim);
+	FL_PulseCB(&rgb->flB, htim);
 }
 
 void FL_RGB_Update(FL_RGB* rgb)

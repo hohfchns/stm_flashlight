@@ -19,11 +19,22 @@ void FL_Init(FlashLight *target, int blinkDuration_, int brightness_, Button but
 	target->tim = tim_;
 	target->lastTime = 0;
 	target->brightTimMultiplier = 1;
+	target->timChannel = TIM_CHANNEL_1;
 
+#ifdef FL_USE_PWM
+	int onDuration = target->brightness * target->brightTimMultiplier * FL_TIM_TOLERANCE;
+	__HAL_TIM_SET_COMPARE(target->tim, target->timChannel, onDuration);
+
+	int offDuration = target->brightness * target->brightTimMultiplier * target->brightnessMax;
+	__HAL_TIM_SET_AUTORELOAD(target->tim, offDuration);
+#endif
+#ifndef FL_USE_PWM
 	__HAL_TIM_SET_AUTORELOAD(target->tim, FL_TIM_TOLERANCE);
+#endif
 }
 
 void FL_Update(FlashLight *target) {
+#ifndef FL_USE_PWM
 	if (target->blinkTime >= target->blinkDuration)
 	{
 		__FL_Timeout_Blink(target);
@@ -32,6 +43,7 @@ void FL_Update(FlashLight *target) {
 	{
 		__FL_Timeout_Brightness(target);
 	}
+#endif // def FL_USE_PWM
 
 	switch (target->state) {
 	case FL_STATE_ON:
@@ -43,7 +55,17 @@ void FL_Update(FlashLight *target) {
 		break;
 
 	case FL_STATE_LOW:
+		;
 		// Counter increases in timeout
+#ifdef FL_USE_PWM
+		int onDuration = target->brightness * FL_TIM_TOLERANCE;
+		__HAL_TIM_SET_COMPARE(target->tim, target->timChannel, onDuration);
+
+		int offDuration = target->brightnessMax * FL_TIM_TOLERANCE;
+		__HAL_TIM_SET_AUTORELOAD(target->tim, offDuration);
+#endif
+
+#ifndef FL_USE_PWM
 		if (target->brightnessCounter < 0)
 		{
 			printf("Brightness counter should not be under 0!\r\n");
@@ -59,10 +81,13 @@ void FL_Update(FlashLight *target) {
 			HAL_GPIO_WritePin(target->targetLight.GPIOx, target->targetLight.pin, 1);
 		}
 
+#endif
 		break;
 
 	case FL_STATE_BLINK:
-		// Logic is just in timeout
+#ifdef FL_USE_PWM
+		__HAL_TIM_SET_COMPARE(target->tim, target->timChannel, target->blinkDuration);
+#endif
 		break;
 
 	default:
@@ -88,9 +113,35 @@ void FL_TIMCB(FlashLight* target, TIM_HandleTypeDef* triggerTim)
     return;
   }
 
+#ifdef FL_USE_PWM
+  if (target->state == FL_STATE_LOW)
+  {
+	  __FL_Timeout_Brightness(target);
+  }
+  else if (target->state == FL_STATE_BLINK)
+  {
+	  __FL_Timeout_Blink(target);
+  }
+#endif
+
+#ifndef FL_USE_PWM
   target->blinkTime += FL_TIM_TOLERANCE;
   target->brightnessTime += FL_TIM_TOLERANCE;
+#endif // def FL_USE_PWM
   return;
+}
+
+void FL_PulseCB(FlashLight* target, TIM_HandleTypeDef* triggerTim)
+{
+	if (target->tim != triggerTim)
+	{
+		return;
+	}
+
+	if (target->state == FL_STATE_LOW)
+	{
+		HAL_GPIO_WritePin(target->targetLight.GPIOx, target->targetLight.pin, 0);
+	}
 }
 
 void FL_BTNCB(FlashLight* target, uint16_t GPIO_Pin)
@@ -121,11 +172,17 @@ void __FL_Timeout_Blink(FlashLight* target)
 
 void __FL_Timeout_Brightness(FlashLight* target)
 {
-	target->brightnessTime = 0;
+#ifdef FL_USE_PWM
 	if (target->state == FL_STATE_LOW)
 	{
-		target->brightnessCounter = (target->brightnessCounter + target->brightTimMultiplier) % target->brightnessMax;
+		HAL_GPIO_WritePin(target->targetLight.GPIOx, target->targetLight.pin, 1);
 	}
+#endif
+
+#ifndef FL_USE_PWM
+		target->brightnessCounter = (target->brightnessCounter + target->brightTimMultiplier) % target->brightnessMax;
+#endif
+
 }
 
 

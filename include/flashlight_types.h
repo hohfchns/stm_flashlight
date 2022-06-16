@@ -24,7 +24,7 @@ typedef struct FlashLight {
   Light targetLight;
   TIM_HandleTypeDef* tim;
   int brightTimMultiplier;
-
+  uint16_t timChannel;
 
   int timMultiplier;
 
