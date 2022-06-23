@@ -2,7 +2,6 @@
 
 void FL_RGB_Init(FL_RGB* rgb, Light rl_, Light gl_, Light bl_, TIM_HandleTypeDef* tim_)
 {
-	FL_RGB_SetColori(rgb, 10, 10, 10);
 	Button tmp = { 0, 0 };
 
 	FL_Init(&rgb->flR, 500, rgb->color.r, tmp, rl_, tim_);
@@ -14,13 +13,11 @@ void FL_RGB_Init(FL_RGB* rgb, Light rl_, Light gl_, Light bl_, TIM_HandleTypeDef
 	rgb->flB.targetLight = gl_;
 	rgb->flG.targetLight = bl_;
 
-	rgb->flR.timChannel = TIM_CHANNEL_1;
-	rgb->flG.timChannel = TIM_CHANNEL_2;
-	rgb->flB.timChannel = TIM_CHANNEL_3;
+	FL_Settings(&rgb->flR, 255, 25);
+	FL_Settings(&rgb->flG, 255, 25);
+	FL_Settings(&rgb->flB, 255, 25);
 
-	FL_Settings(&rgb->flR, 255, 5);
-	FL_Settings(&rgb->flG, 255, 5);
-	FL_Settings(&rgb->flB, 255, 5);
+	FL_RGB_SetColori(rgb, 10, 10, 10);
 }
 
 void FL_RGB_TIMCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
@@ -28,13 +25,6 @@ void FL_RGB_TIMCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
 	FL_TIMCB(&rgb->flR, htim);
 	FL_TIMCB(&rgb->flG, htim);
 	FL_TIMCB(&rgb->flB, htim);
-}
-
-void FL_RGB_PulseCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)
-{
-	FL_PulseCB(&rgb->flR, htim);
-	FL_PulseCB(&rgb->flG, htim);
-	FL_PulseCB(&rgb->flB, htim);
 }
 
 void FL_RGB_Update(FL_RGB* rgb)

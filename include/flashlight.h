@@ -5,9 +5,9 @@
 #include "main.h"
 #include "flashlight_input.h"
 
-#define BRIGHTNESS_TOLERANCE 10
-#define MAX_BRIGHTNESS_COUNT 10
-#define FL_TIM_TOLERANCE 10
+#define BRIGHTNESS_TOLERANCE 10 // DEFAULT VALUE
+#define MAX_BRIGHTNESS_COUNT 10 // DEFAULT VALUE
+#define FL_TIM_TOLERANCE 10 // DEAFULT VALUE
 
 void FL_Init(FlashLight *target, int blinkDuration_, int brightness_, Button button_, Light light_, TIM_HandleTypeDef* tim);
 void FL_Update(FlashLight* target);

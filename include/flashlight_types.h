@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "flashlight_input.h"
+#include "stm_mclock.h"
 
 typedef enum FlashLightState {
   FL_STATE_OFF = 0,
@@ -27,6 +28,8 @@ typedef struct FlashLight {
   uint16_t timChannel;
 
   int timMultiplier;
+
+  MCL_Clock brightnessClock;
 
   uint32_t lastTime;
 } FlashLight;
