@@ -3,21 +3,22 @@
 void FL_RGB_Init(FL_RGB* rgb, Light rl_, Light gl_, Light bl_, TIM_HandleTypeDef* tim_)
 {
 	Button tmp = { 0, 0 };
+	FL_RGB_SetColori(rgb, 5, 5, 5);
 
 	FL_Init(&rgb->flR, 500, rgb->color.r, tmp, rl_, tim_);
-	FL_Init(&rgb->flB, 500, rgb->color.g, tmp, gl_, tim_);
-	FL_Init(&rgb->flG, 500, rgb->color.b, tmp, bl_, tim_);
+	FL_Init(&rgb->flG, 500, rgb->color.g, tmp, gl_, tim_);
+	FL_Init(&rgb->flB, 500, rgb->color.b, tmp, bl_, tim_);
 
 	rgb->flR.targetLight = rl_;
 	// Blue and green have flipped order in pins
-	rgb->flB.targetLight = gl_;
-	rgb->flG.targetLight = bl_;
+	rgb->flG.targetLight = gl_;
+	rgb->flB.targetLight = bl_;
 
-	FL_Settings(&rgb->flR, 255, 25);
-	FL_Settings(&rgb->flG, 255, 25);
-	FL_Settings(&rgb->flB, 255, 25);
+	FL_Settings(&rgb->flR, 255);
+	FL_Settings(&rgb->flG, 255);
+	FL_Settings(&rgb->flB, 255);
 
-	FL_RGB_SetColori(rgb, 10, 10, 10);
+	FL_RGB_SetColori(rgb, 255, 60, 125);
 }
 
 void FL_RGB_TIMCB(FL_RGB* rgb, TIM_HandleTypeDef* htim)

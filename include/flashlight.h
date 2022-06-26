@@ -16,7 +16,7 @@ void FL_SetBrightness(FlashLight* target, int brightness_);
 void FL_TIMCB(FlashLight* target, TIM_HandleTypeDef* triggerTim);
 void FL_PulseCB(FlashLight* target, TIM_HandleTypeDef* triggerTim);
 void FL_BTNCB(FlashLight* target, uint16_t GPIO_Pin);
-void FL_Settings(FlashLight* target, int brightnessMax_, int timMultiplier_);
+void FL_Settings(FlashLight* target, int brightnessMax_);
 void __FL_Timeout_Blink(FlashLight* target);
 void __FL_Timeout_Brightness(FlashLight* target);
 

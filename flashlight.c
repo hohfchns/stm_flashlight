@@ -72,10 +72,16 @@ void FL_BTNCB(FlashLight* target, uint16_t GPIO_Pin)
 }
 
 
-void FL_Settings(FlashLight* target, int brightnessMax_, int timMultiplier_)
+void FL_SetBrightnessFromMax(FlashLight* target, int brightnessMax, int desired)
+{
+//	target->brightness = desired / brightnessMax;
+}
+
+void FL_Settings(FlashLight* target, int brightnessMax_)
 {
 	target->brightnessClock.maxCount = brightnessMax_;
-	target->brightnessClock.timeScale = timMultiplier_;
+	target->brightnessClock.timeScale = brightnessMax_ / MAX_BRIGHTNESS_COUNT;
+//	target->brightnessClock.timeScale = timMultiplier_;
 }
 
 
